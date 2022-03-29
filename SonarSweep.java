@@ -8,10 +8,10 @@ import java.util.stream.Collectors;
 
 public class SonarSweep {
     public static void main(String[] args) {
-        System.out.println("Gamma Read: " + mostCommonBitWithTempList('1','0'));
-        System.out.println("Epsilon Read: " + mostCommonBitWithTempList('0','1'));
-        System.out.println("Product is: " + binaryToDecimalConverter(mostCommonBitWithTempList('1','0'))
-                                             * binaryToDecimalConverter((mostCommonBitWithTempList('0','1'))));
+        System.out.println("02 Read: " + mostCommonBitWithTempList("O2"));
+        System.out.println("CO2 Read: " + mostCommonBitWithTempList("CO2"));
+        System.out.println("Product is: " + binaryToDecimalConverter(mostCommonBitWithTempList("O2"))
+                                             * binaryToDecimalConverter((mostCommonBitWithTempList("CO2"))));
 
     }
 
@@ -109,8 +109,8 @@ public class SonarSweep {
         return new String(commonBits);
     } 
 
-    private static List<String> tempList = new ArrayList<String>(dayThreefileReader());
-    private static String mostCommonBitWithTempList(char bitToKeep, char bitTodelete) { 
+
+    private static String mostCommonBitWithTempList(List<String> binStrList) { 
         int count1 = 0;
         int count0 = 0;
 
@@ -118,33 +118,77 @@ public class SonarSweep {
             count1 = 0;
             count0 = 0;
 
-            for(int j = 0; j < tempList.size(); j++) {
-                if(tempList.get(j).charAt(i) == bitToKeep) {
+            for(int j = 0; j < binStrList.size(); j++) {
+                if(binStrList.get(j).charAt(i) == '1') {
                     count1++;
                 } else {
                     count0++;
                 }
             }
+        }
+        
+        if(count1 > count0) {
+            return "1";
+        } else {
+            return "0";
+        }
+    } 
 
-            if(count1 < count0) {
-                for(int z = 0; z < tempList.size(); z++) {
-                    if(tempList.get(z).charAt(i) == bitToKeep) {
-                        String c = tempList.get(z);
-                        tempList.remove(z);
-                        z--;
+    private static String mostCommonBitWithTempList(String gasType) { 
+        
+        List<String> tempList = new ArrayList<>(dayThreefileReader());
+        int count1;
+        int count0;
+
+        for(int i = 0; i < 12; i++) {
+            count1 = 0;
+            count0 = 0;
+
+            for(int j = 0; j < tempList.size(); j++) {
+                if(tempList.get(j).charAt(i) == '1') {
+                    count1++;
+                } else {
+                    count0++;
+                }
+            }
+            if(gasType.equals("O2")) {
+                if(count1 < count0) {
+                    for(int z = 0; z < tempList.size(); z++) {
+                        if(tempList.get(z).charAt(i) == '1') {
+                            tempList.remove(tempList.get(z));
+                            z--;
+                        }
+                    }
+
+                } else {
+                    for(int z = 0; z < tempList.size(); z++) {
+                        if(tempList.get(z).charAt(i) == '0') {
+                            tempList.remove(tempList.get(z));
+                            z--;
+                        }
                     }
                 }
+            
             } else {
-                for(int z = 0; z < tempList.size(); z++) {
-                    if(tempList.get(z).charAt(i) == bitTodelete) {
-                        String c = tempList.get(z);
-                        tempList.remove(z);
-                        z--;
+                
+                if(count0 < count1) {
+                    for(int z = 0; z < tempList.size(); z++) {
+                        if(tempList.get(z).charAt(i) == '1') {
+                            tempList.remove(tempList.get(z));
+                            z--;
+                        }
+                    }
+                } else {
+                    for(int z = 0; z < tempList.size(); z++) {
+                        if(tempList.get(z).charAt(i) == '0') {
+                            tempList.remove(tempList.get(z));
+                            z--;
+                        }
                     }
                 }
             }
         }
-        System.out.println("Temp List for: " + bitToKeep + "LIST: " +  tempList);
+        System.out.println("List size: " + tempList.size() + " List elements: " + tempList);
         return tempList.get(0);
     } 
 /*      
